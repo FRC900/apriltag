@@ -47,7 +47,7 @@ void ApriltagDetectorNode::ImageCb(const ImageConstPtr &image_msg) {
       // ROS_INFO_STREAM_THROTTLE(1, "Allowing tag with id " << tag.id  );
     }
     else {
-      ROS_WARN_STREAM_THROTTLE("Filtering tag with id " << tag.id);
+      ROS_WARN_STREAM_THROTTLE(1, "Filtering tag with id " << tag.id);
     }
   }
   apriltag_array_msg->apriltags = filtered_tags;
