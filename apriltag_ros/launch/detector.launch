@@ -9,7 +9,7 @@
     <param name="family" type="int" value="0"/>
     <param name="type" type="int" value="0"/>
     <param name="black_border" type="int" value="$(arg border_size)"/>
-    <!-- <rosparam file="$(find apriltag_ros)/config/detector_config.yaml" command="load"/> -->
+    <rosparam file="$(find apriltag_ros)/config/detector_config.yaml" command="load"/>
 
     <remap from="~image" to="$(arg image)"/>
     <remap from="~tags" to="tags"/>
