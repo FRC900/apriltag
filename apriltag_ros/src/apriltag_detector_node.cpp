@@ -31,14 +31,15 @@ void ApriltagDetectorNode::ImageCb(const ImageConstPtr &image_msg) {
 
   // Detect
   auto apriltags = detector_->Detect(gray);
-
+  
   // Publish apriltags
   auto apriltag_array_msg = boost::make_shared<ApriltagArrayStamped>();
   apriltag_array_msg->header = image_msg->header;
-  // this should be configurable but the idea is if they are adding more apriltags mid season we have more problems to worry about
-  // check if it is within range 
-  // @TODO make this configurable 
-  constexpr int LEGAL_TAGS[16] = {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16};
+
+  // Load config for legal tags
+  std::vector<int> LEGAL_TAGS;
+  pnh_.param<std::vector<int>>("legal_tags", LEGAL_TAGS, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
+
   apriltag_ros::ApriltagVec filtered_tags;
   for (const auto &tag : apriltags) {
     // if tag id is found
