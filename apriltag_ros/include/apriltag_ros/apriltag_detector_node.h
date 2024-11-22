@@ -32,6 +32,8 @@ private:
   boost::mutex connect_mutex_;
   dr::Server<ConfigT> cfg_server_;
 
+  std::set<int> legal_tags_;
+
   ros::Publisher pub_tags_;
   it::Publisher pub_disp_;
 
