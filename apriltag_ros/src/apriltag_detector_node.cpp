@@ -14,6 +14,14 @@ using apriltag_msgs::ApriltagArrayStamped;
 
 ApriltagDetectorNode::ApriltagDetectorNode(const ros::NodeHandle &pnh)
     : pnh_(pnh), it_(pnh_), cfg_server_(pnh) {
+
+  // Load config for legal apriltags
+  std::vector<int> _legal_tags_vec;
+  pnh_.param<std::vector<int>>("legal_tags", _legal_tags_vec, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
+  for (int legal_tag : _legal_tags_vec) {
+    legal_tags_.emplace(legal_tag);
+  }   
+
   cfg_server_.setCallback(
       boost::bind(&ApriltagDetectorNode::ConfigCb, this, _1, _2));
 
@@ -36,14 +44,10 @@ void ApriltagDetectorNode::ImageCb(const ImageConstPtr &image_msg) {
   auto apriltag_array_msg = boost::make_shared<ApriltagArrayStamped>();
   apriltag_array_msg->header = image_msg->header;
 
-  // Load config for legal tags
-  std::vector<int> LEGAL_TAGS;
-  pnh_.param<std::vector<int>>("legal_tags", LEGAL_TAGS, {1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16});
-
   apriltag_ros::ApriltagVec filtered_tags;
   for (const auto &tag : apriltags) {
     // if tag id is found
-    if (std::find(std::begin(LEGAL_TAGS), std::end(LEGAL_TAGS), tag.id) != std::end(LEGAL_TAGS)) {
+    if (legal_tags_.count(tag.id) != 0) {
       filtered_tags.push_back(tag);
       // ROS_INFO_STREAM_THROTTLE(1, "Allowing tag with id " << tag.id  );
     }
@@ -65,6 +69,7 @@ void ApriltagDetectorNode::ImageCb(const ImageConstPtr &image_msg) {
 }
 
 void ApriltagDetectorNode::ConfigCb(ConfigT &config, int level) {
+
   if (level < 0) {
     ROS_INFO("%s: %s", pnh_.getNamespace().c_str(),
              "Initializing reconfigure server");
