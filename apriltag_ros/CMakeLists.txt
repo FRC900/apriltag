@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(apriltag_ros)
 
-set(CMAKE_CXX_STANDARD 11)
+# set(CMAKE_CXX_STANDARD 11)
 
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
